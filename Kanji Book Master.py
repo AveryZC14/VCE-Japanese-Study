@@ -189,6 +189,7 @@ while True:
     print(dis3)
     inp = input("-------------type 'y' if you got it right:")
 
+    
     #adding 1 to the amounts if y is input hee hee
     
     if inp == 'y' or inp == 'z':

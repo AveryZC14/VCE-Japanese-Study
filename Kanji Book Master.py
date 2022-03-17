@@ -178,7 +178,7 @@ elif repeat == 4 or repeat == 5 or repeat == 6:
 
         
 while True:
-    print (current_amounts)
+    
     #if staggeryn == True:
 
     dis_row, dis1, dis2, dis3, current_amounts = stagger_question(repeat, words, current_amounts)
@@ -189,29 +189,28 @@ while True:
     print(dis3)
     inp = input("-------------type 'y' if you got it right:")
 
-    
     #adding 1 to the amounts if y is input hee hee
     
     if inp == 'y' or inp == 'z':
         if repeat <= 3:
             prev_amounts = ws[str('D'+str(dis_row))].value
             ws[str('D'+str(dis_row))] = ws[str('D'+str(dis_row))].value + 1
-        elif repeat >= 6:
+        elif repeat >= 4:
             prev_amounts = ws[str('E'+str(dis_row))].value
             ws[str('E'+str(dis_row))] = ws[str('E'+str(dis_row))].value + 1
         
         wb.save('KanjiBook.xlsx')
-        if repeat == 3:
-            words.remove([dis_row, dis1, dis2, dis3, current_amounts[dis_row]])
-            current_amounts.pop(dis_row)
-        if repeat == 6:
-            words.remove([dis_row, dis3, dis2, dis1, current_amounts[dis_row]])
+        if repeat == 3 or repeat == 6:
+            for wrd in words:
+                if wrd[0] == dis_row:
+                    words.remove(wrd)
+                    break
             current_amounts.pop(dis_row)
     elif inp == 'n' or inp == 'x':
         if repeat <= 3:
             prev_amounts = ws[str('D'+str(dis_row))].value
             ws[str('D'+str(dis_row))] = ws[str('D'+str(dis_row))].value - 1
-        elif repeat >= 6:
+        elif repeat >= 4:
             prev_amounts = ws[str('E'+str(dis_row))].value
             ws[str('E'+str(dis_row))] = ws[str('E'+str(dis_row))].value - 1
         wb.save('KanjiBook.xlsx')
@@ -223,7 +222,7 @@ while True:
                     ws['G'+str(adding_row)] = dis1
                     ws['H'+str(adding_row)] = dis2
                     ws['I'+str(adding_row)] = dis3
-                if repeat >= 6:
+                if repeat >= 4:
                     ws['G'+str(adding_row)] = dis3
                     ws['H'+str(adding_row)] = dis2
                     ws['I'+str(adding_row)] = dis1

@@ -24,7 +24,8 @@ wb.save('VocabBookCodeBackup.xlsx')
 
 words = []
 
-initial_word_amounts = {}
+initial_word_amounts_je = {}
+initial_word_amounts_ej = {}
 
 row_num = 0
 for row in ws.values:
@@ -36,6 +37,9 @@ for row in ws.values:
         if row[3] == None:
             ws[str('D'+str(row_num))] = 0
             wb.save('VocabBook.xlsx')
+        if row[4] == None:
+            ws[str('E'+str(row_num))] = 0
+            wb.save('VocabBook.xlsx')
         wordrow = [row_num]
         for lad in row[0:3]:
             wordrow.append(lad)
@@ -43,13 +47,19 @@ for row in ws.values:
             wordrow.append(0)
         else:
             wordrow.append(row[3])
+        if row[4] == None:
+            wordrow.append(0)
+        else:
+            wordrow.append(row[4])
         words.append(wordrow)
-        initial_word_amounts[row_num] = wordrow[4]
+        initial_word_amounts_je[row_num] = wordrow[4]
+        initial_word_amounts_ej[row_num] = wordrow[5]
 
 
 #removing the first lad from the lads
 words.pop(0)
-initial_word_amounts.pop(1)
+initial_word_amounts_je.pop(1)
+initial_word_amounts_ej.pop(1)
 
 #print(words)
 
@@ -58,8 +68,6 @@ print('')
 print('Vocab Book:')
 for i in words:
     print (i)
-
-print()
 
 # if you wna do the stagger mode
 staggeryn = True
@@ -127,8 +135,8 @@ def stagger_question(repeat, wordlist, current_amounts):
     word, new_amounts = weighted_rand(wordlist, current_amounts)
     if repeat == 1 or repeat == 4:
         wordlist.remove(word)
-    disRow = 0; dis1 = ''; dis2 = ''; dis3 = ''
-    disRow = word[0]
+    dis_row = 0; dis1 = ''; dis2 = ''; dis3 = ''
+    dis_row = word[0]
     if repeat == 1 or repeat == 2 or repeat == 3:
         dis1 = str(word[1])
         dis2 = str(word[2])
@@ -138,9 +146,9 @@ def stagger_question(repeat, wordlist, current_amounts):
         dis2 = str(word[2])
         dis3 = str(word[1])
     if repeat == 1 or repeat == 4:
-        new_amounts.pop(disRow)
+        new_amounts.pop(dis_row)
     current_amounts = new_amounts
-    return disRow, dis1, dis2, dis3, current_amounts
+    return dis_row, dis1, dis2, dis3, current_amounts
 
 def weighted_rand(wordlist, current_amounts):
     weightings = []
@@ -153,16 +161,18 @@ def weighted_rand(wordlist, current_amounts):
 finished = False
 #dis1, dis2 and dis3 for the staggered
 current_amounts = {}
-for existing in initial_word_amounts:
-        current_amounts[existing] = initial_word_amounts[existing]
-
-print(current_amounts)
+if repeat == 1 or repeat == 2 or repeat == 3:
+    for existing in initial_word_amounts_je:
+        current_amounts[existing] = initial_word_amounts_je[existing]
+elif repeat == 4 or repeat == 5 or repeat == 6:
+    for existing in initial_word_amounts_je:
+        current_amounts[existing] = initial_word_amounts_ej[existing]
 
 while True:
 
     #if staggeryn == True:
 
-    disRow, dis1, dis2, dis3, current_amounts = stagger_question(repeat, words, current_amounts)
+    dis_row, dis1, dis2, dis3, current_amounts = stagger_question(repeat, words, current_amounts)
     print(dis1)
     input()
     print(dis2)
@@ -173,18 +183,27 @@ while True:
     #adding 1 to the amounts if y is input hee hee
     
     if inp == 'y' or inp == 'z':
-        prev_amounts = ws[str('D'+str(disRow))].value
-        ws[str('D'+str(disRow))] = ws[str('D'+str(disRow))].value + 1
+        if repeat <= 3:
+            prev_amounts = ws[str('D'+str(dis_row))].value
+            ws[str('D'+str(dis_row))] = ws[str('D'+str(dis_row))].value + 1
+        elif repeat >= 4:
+            prev_amounts = ws[str('E'+str(dis_row))].value
+            ws[str('E'+str(dis_row))] = ws[str('E'+str(dis_row))].value + 1
+        
         wb.save('VocabBook.xlsx')
-        if repeat == 3:
-            words.remove([disRow, dis1, dis2, dis3, current_amounts[disRow]])
-            current_amounts.pop(disRow)
-        if repeat == 6:
-            words.remove([disRow, dis3, dis2, dis1, current_amounts[disRow]])
-            current_amounts.pop(disRow)
+        if repeat == 3 or repeat == 6:
+            for wrd in words:
+                if wrd[0] == dis_row:
+                    words.remove(wrd)
+                    break
+            current_amounts.pop(dis_row)
     elif inp == 'n' or inp == 'x':
-        prev_amounts = ws[str('D'+str(disRow))].value
-        ws[str('D'+str(disRow))] = ws[str('D'+str(disRow))].value - 1
+        if repeat <= 3:
+            prev_amounts = ws[str('D'+str(dis_row))].value
+            ws[str('D'+str(dis_row))] = ws[str('D'+str(dis_row))].value - 1
+        elif repeat >= 4:
+            prev_amounts = ws[str('E'+str(dis_row))].value
+            ws[str('E'+str(dis_row))] = ws[str('E'+str(dis_row))].value - 1
         wb.save('VocabBook.xlsx')
             
     
@@ -193,9 +212,9 @@ while True:
     for row in ws.values:
         row_num +=1
         if row[1] != None:
-            initial_word_amounts[row_num] = row[3]
+            initial_word_amounts_je[row_num] = row[3]
     for existing in current_amounts:
-        current_amounts[existing] = initial_word_amounts[existing]
+        current_amounts[existing] = initial_word_amounts_je[existing]
     
     current_amounts[1] = 'peepee poopoo'
     current_amounts.pop(1)

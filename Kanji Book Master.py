@@ -7,6 +7,7 @@ from re import A
 #import xlrd
 import random
 from openpyxl import Workbook,load_workbook
+from math import ceil
 
 #initialise variables
 #headings={}; tagCol=0; tags={}
@@ -36,10 +37,13 @@ initial_word_amounts_ej = {}
 row_num = 0
 for row in ws.values:
     row_num +=1
+    
+    
     if (row[1] == None):
         print ("sussy")
         break
     else:
+        
         if row[3] == None:
             ws[str('D'+str(row_num))] = 0
             wb.save('KanjiBook.xlsx')
@@ -62,7 +66,23 @@ for row in ws.values:
         initial_word_amounts_je[row_num] = wordrow[4]
         initial_word_amounts_ej[row_num] = wordrow[5]
         
+        
+row_num_2 = 0
+for row in ws.values:
+    row_num_2 += 1
+    if (row[6] == None):
+        print ("sussy")
+        break
+    else:
+        ws[str('G'+str(row_num_2))] = None
+        ws[str('H'+str(row_num_2))] = None
+        ws[str('I'+str(row_num_2))] = None
+        wb.save('KanjiBook.xlsx')
 
+ws["G1"] = "kahnjee"
+ws["H1"] = "hiragarnar"
+ws["I1"] = "english"
+wb.save('KanjiBook.xlsx')
 
 #removing the first lad from the lads
 words.pop(0)
@@ -77,13 +97,17 @@ print('Kanji Book:')
 for i in words:
     print (i)
 
+print("")
+print("==========================End of data dump==========================")
+print("")
+
 # if you wna do the stagger mode
 staggeryn = True
 
 repeat = 0
 confirmed = False
 while not confirmed:
-    print('select your repeating mode')
+    print("select your repeating mode or type 'help' for some help")
     print()
     print("Kanji to Hiragana to English:")
     print('1 - do not repeat words')
@@ -95,13 +119,43 @@ while not confirmed:
     print('5 - repeat all words')
     print('6 - repeat only words I get wrong')
     print()
-    inp = int(input("repeating mode? "))
-    if inp == 1 or inp == 2 or inp == 3 or inp == 4 or inp == 5 or inp == 6:
-        repeat = inp
-        confirmed = True
-    else:
-        print("invalid input (input '1','2','3','4','5','6')")
-#        confirmed = False
+    inp = input("repeating mode? ")
+    try:
+        inp = int(inp)    
+        if inp == 1 or inp == 2 or inp == 3 or inp == 4 or inp == 5 or inp == 6:
+            repeat = inp
+            confirmed = True
+        else:
+            print()
+            print(':(')
+            print()
+            print("invalid input (number too high what u doin)")
+    except:
+        if inp == 'help':
+            print("")
+            print("==========================End of data dump==========================")
+            print("")
+            print('the code will spit kanji at ya')
+            print("the higher the word's score, the less likely it is to pop up")
+            print('this ensures you practice the words you know the least well every time')
+            print("press enter to go to the next part of the word (kanji, hiragana, english) or (english, hiragana, kanji)")
+            print("at the end of each word, the code will prompt you for how you went")
+            print()
+            print("type 'y' or 'z' if you got it right, this will increase that word's score by 1")
+            print()
+            print("type 'x' or 'n' if you got it wrong and would like to work on it, this will decrease that word's score by 1")
+            print('this will also add it to the little list next to the main one on the excel sheet, in case you want to copy it into your vocab book')
+            print()
+            print("leave it blank or type anything else if you got it wrong but it's aight, this will not affect that word's score")
+            print()
+            print(':)')
+            print()
+        else:
+            print()
+            print(':(')
+            print()
+            print("invalid input (input '1','2','3','4','5','6' or 'help' )")
+    #       confirmed = False
 
 #print(words)
 
@@ -187,7 +241,7 @@ while True:
     print(dis2)
     input()
     print(dis3)
-    inp = input("-------------type 'y' if you got it right:")
+    inp = input("---------------------------how'd you go?")
 
     #adding 1 to the amounts if y is input hee hee
     
@@ -206,31 +260,37 @@ while True:
                     words.remove(wrd)
                     break
             current_amounts.pop(dis_row)
-    elif inp == 'n' or inp == 'x':
+    elif inp == 'n' or inp == 'x' or inp == 'c' or inp == 'h':
         if repeat <= 3:
             prev_amounts = ws[str('D'+str(dis_row))].value
             ws[str('D'+str(dis_row))] = ws[str('D'+str(dis_row))].value - 1
+            if ws[str('D'+str(dis_row))].value > 1:
+                ws[str('D'+str(dis_row))] = 0
         elif repeat >= 4:
             prev_amounts = ws[str('E'+str(dis_row))].value
             ws[str('E'+str(dis_row))] = ws[str('E'+str(dis_row))].value - 1
+            if ws[str('E'+str(dis_row))].value > 1:
+                ws[str('E'+str(dis_row))] = 0
         wb.save('KanjiBook.xlsx')
+
+        if inp == 'c' or inp == 'h':
         
-        for i in initial_words:
-            if i[0] == dis_row:
-                wrongies.append(i)
-                if repeat <= 3:
-                    ws['G'+str(adding_row)] = dis1
-                    ws['H'+str(adding_row)] = dis2
-                    ws['I'+str(adding_row)] = dis3
-                if repeat >= 4:
-                    ws['G'+str(adding_row)] = dis3
-                    ws['H'+str(adding_row)] = dis2
-                    ws['I'+str(adding_row)] = dis1
-                adding_row = adding_row + 1
-                print("adding row:",adding_row)
-                wb.save('KanjiBook.xlsx')
+            for i in initial_words:
+                if i[0] == dis_row:
+                    wrongies.append(i)
+                    if repeat <= 3:
+                        ws['G'+str(adding_row)] = dis1
+                        ws['H'+str(adding_row)] = dis2
+                        ws['I'+str(adding_row)] = dis3
+                    if repeat >= 4:
+                        ws['G'+str(adding_row)] = dis3
+                        ws['H'+str(adding_row)] = dis2
+                        ws['I'+str(adding_row)] = dis1
+                    adding_row = adding_row + 1
+                    print("adding row:",adding_row)
+                    wb.save('KanjiBook.xlsx')
                 
-                break
+                    break
             
     
     #re getting the swaggy amounts from the big lad list lad thingo lad yes

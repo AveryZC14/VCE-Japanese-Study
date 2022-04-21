@@ -7,6 +7,7 @@ from re import A
 #import xlrd
 import random
 from openpyxl import Workbook,load_workbook
+from math import ceil
 
 #initialise variables
 #headings={}; tagCol=0; tags={}
@@ -34,6 +35,9 @@ for row in ws.values:
         print ("sussy")
         break
     else:
+        if row[0] == None:
+            ws[str('A'+str(row_num))] = row[1]
+            wb.save('VocabBook.xlsx')
         if row[3] == None:
             ws[str('D'+str(row_num))] = 0
             wb.save('VocabBook.xlsx')
@@ -41,7 +45,12 @@ for row in ws.values:
             ws[str('E'+str(row_num))] = 0
             wb.save('VocabBook.xlsx')
         wordrow = [row_num]
-        for lad in row[0:3]:
+        if row[0] == None:
+            wordrow.append(row[1])
+        else:
+            wordrow.append(row[0])
+            
+        for lad in row[1:3]:
             wordrow.append(lad)
         if row[3] == None:
             wordrow.append(0)
@@ -69,13 +78,17 @@ print('Vocab Book:')
 for i in words:
     print (i)
 
+print("")
+print("==========================End of data dump==========================")
+print("")
+
 # if you wna do the stagger mode
 staggeryn = True
 
 repeat = 0
 confirmed = False
 while not confirmed:
-    print('select your repeating mode')
+    print("select your repeating mode or type 'help' for some help")
     print()
     print("Kanji to Hiragana to English:")
     print('1 - do not repeat words')
@@ -87,18 +100,47 @@ while not confirmed:
     print('5 - repeat all words')
     print('6 - repeat only words I get wrong')
     print()
-    inp = int(input("repeating mode? "))
-    if inp == 1 or inp == 2 or inp == 3 or inp == 4 or inp == 5 or inp == 6:
-        repeat = inp
-        confirmed = True
-    else:
-        print("invalid input (input '1','2','3','4','5','6')")
-#        confirmed = False
+    inp = input("repeating mode? ")
+    try:
+        inp = int(inp)    
+        if inp == 1 or inp == 2 or inp == 3 or inp == 4 or inp == 5 or inp == 6:
+            repeat = inp
+            confirmed = True
+        else:
+            print()
+            print(':(')
+            print()
+            print("invalid input (number too high what u doin)")
+    except:
+        if inp == 'help':
+            print("")
+            print("==========================End of data dump==========================")
+            print("")
+            print('the code will spit vocab at ya')
+            print("the higher the word's score, the less likely it is to pop up")
+            print('this ensures you practice the words you know the least well every time')
+            print("press enter to go to the next part of the word (kanji, hiragana, english) or (english, hiragana, kanji)")
+            print("at the end of each word, the code will prompt you for how you went")
+            print()
+            print("type 'y' or 'z' if you got it right, this will increase that word's score by 1")
+            print()
+            print("type 'x' or 'n' if you got it wrong and would like to work on it, this will decrease that word's score by 1")
+            print()
+            print("leave it blank or type anything else if you got it wrong but it's aight, this will not affect that word's score")
+            print()
+            print(':)')
+            print()
+        else:
+            print()
+            print(':(')
+            print()
+            print("invalid input (input '1','2','3','4','5','6' or 'help' )")
+    #       confirmed = False
 
 #print(words)
 
 print("")
-print("=======================End of setup=======================")
+print("==========================End of setup==========================")
 print("")
 
 # -----------------------End of setup-----------------------
@@ -153,7 +195,7 @@ def stagger_question(repeat, wordlist, current_amounts):
 def weighted_rand(wordlist, current_amounts):
     weightings = []
     for amount in current_amounts:
-        weightings.append(round(1000*((2/3)**current_amounts[amount])))
+        weightings.append(ceil(1000*((2/3)**current_amounts[amount])))
     word_as_a_list = random.choices(wordlist,weights=weightings, k=1)
     word = word_as_a_list[0]
     return word, current_amounts
@@ -178,7 +220,7 @@ while True:
     print(dis2)
     input()
     print(dis3)
-    inp = input("-------------type 'y' if you got it right:")
+    inp = input("---------------------------how'd you go?")
 
     #adding 1 to the amounts if y is input hee hee
     
@@ -201,9 +243,13 @@ while True:
         if repeat <= 3:
             prev_amounts = ws[str('D'+str(dis_row))].value
             ws[str('D'+str(dis_row))] = ws[str('D'+str(dis_row))].value - 1
+            if ws[str('D'+str(dis_row))].value > 0:
+                ws[str('D'+str(dis_row))] = 0
         elif repeat >= 4:
             prev_amounts = ws[str('E'+str(dis_row))].value
             ws[str('E'+str(dis_row))] = ws[str('E'+str(dis_row))].value - 1
+            if ws[str('E'+str(dis_row))].value > 0:
+                ws[str('E'+str(dis_row))] = 0
         wb.save('VocabBook.xlsx')
             
     

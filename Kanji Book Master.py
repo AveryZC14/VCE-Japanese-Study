@@ -19,7 +19,35 @@ from math import ceil
 
 wb = load_workbook('KanjiBook.xlsx')
 
-ws = wb.active
+print("choose the worksheet that you want to pull from")
+print()
+
+while True:
+    sheet_dictionary = {}
+    sheet_num = 1
+    sheet_choice = 0
+    for sheet in wb.worksheets:
+        sheet_dictionary[sheet_num] = sheet
+        sheet_num += 1
+    for key, value in sheet_dictionary.items():
+        print(key,value)
+    print()
+    try:
+        sheet_choice = int(input("which sheet would you like to open? (jus put the number in):"))
+
+        try:
+            print ("you've chosen:",sheet_dictionary[sheet_choice])
+            break
+        except:
+            print("that sheet doesn't exist!")
+
+    except:
+        print("input must be an integer in the dictionary")
+
+
+
+ws = sheet_dictionary[sheet_choice]
+#ws = wb[sheet_dictionary[sheet_choice].replace('<Worksheet "',"").replace('">',"")]
 
 wb.save('KanjiBookCodeBackup.xlsx')
 

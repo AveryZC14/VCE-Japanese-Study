@@ -1,7 +1,5 @@
 # Header row
-# Original code by fig
-# modifications made by andre
-#swag from both of us
+# Code by Avery Cheng
 # import necessary features
 from re import A
 #import xlrd

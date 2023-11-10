@@ -1,7 +1,5 @@
 # Header row
-# Original code by fig
-# modifications made by andre
-#swag from both of us
+# Code by Avery Cheng
 # import necessary features
 from re import A
 #import xlrd
@@ -119,7 +117,7 @@ initial_word_amounts_ej.pop(1)
 
 #print(words)
 
-print("Welcome to Kanji Book Master!!! Original code by Fionn Mitchell and Andrew Cheng :)")
+print("Welcome to Kanji Book Master!!! Original code by Avery Cheng :)")
 print('')
 print('Kanji Book:')
 for i in words:

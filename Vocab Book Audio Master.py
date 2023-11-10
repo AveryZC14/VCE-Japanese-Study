@@ -1,7 +1,5 @@
 # Header row
-# Original code by fig
-# modifications made by andre
-#swag from both of us
+# Code by Avery Cheng
 # import necessary features
 from re import A
 #import xlrd
@@ -58,7 +56,7 @@ initial_word_amounts.pop(1)
 
 #print(words)
 
-print("Welcome to Vocab Book Master!!! Original code by Fionn Mitchell and Andrew Cheng :)")
+print("Welcome to Vocab Book Master!!! Original code by Avery Cheng :)")
 print('')
 print('Vocab Book:')
 for i in words:
